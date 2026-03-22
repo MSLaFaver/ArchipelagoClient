@@ -57,11 +57,24 @@ text = "AP Connected"
 vertical_alignment = 2
 
 [node name="Tracker" type="Control" parent="."]
-visible = false
 layout_mode = 3
 anchors_preset = 0
 offset_right = 40.0
 offset_bottom = 40.0
+
+[node name="LuckContainer" type="MarginContainer" parent="Tracker"]
+layout_mode = 0
+offset_right = 104.0
+offset_bottom = 40.0
+mouse_filter = 2
+theme_override_constants/margin_left = 52
+theme_override_constants/margin_top = 15
+
+[node name="luck_level" type="Label" parent="Tracker/LuckContainer"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("1_spycr")
+theme_override_font_sizes/font_size = 18
+vertical_alignment = 2
 
 [node name="TrackerContainer" type="MarginContainer" parent="Tracker"]
 layout_mode = 1
@@ -111,7 +124,7 @@ handle_input_locally = false
 size = Vector2i(140, 140)
 size_2d_override = Vector2i(512, 512)
 size_2d_override_stretch = true
-render_target_update_mode = 0
+render_target_update_mode = 4
 
 [node name="Camera3D" type="Camera3D" parent="Tracker/TrackerContainer/GridContainer/ItemSlot/ItemContainer/SubViewport"]
 transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 4, 0)
@@ -143,7 +156,7 @@ handle_input_locally = false
 size = Vector2i(140, 140)
 size_2d_override = Vector2i(512, 512)
 size_2d_override_stretch = true
-render_target_update_mode = 0
+render_target_update_mode = 4
 
 [node name="Camera3D" type="Camera3D" parent="Tracker/TrackerContainer/GridContainer/ItemSlot2/ItemContainer/SubViewport"]
 transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 4, 0)
@@ -176,7 +189,7 @@ handle_input_locally = false
 size = Vector2i(140, 140)
 size_2d_override = Vector2i(512, 512)
 size_2d_override_stretch = true
-render_target_update_mode = 0
+render_target_update_mode = 4
 
 [node name="Camera3D" type="Camera3D" parent="Tracker/TrackerContainer/GridContainer/ItemSlot3/ItemContainer/SubViewport"]
 transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 4, 0)
@@ -208,7 +221,7 @@ handle_input_locally = false
 size = Vector2i(140, 140)
 size_2d_override = Vector2i(512, 512)
 size_2d_override_stretch = true
-render_target_update_mode = 0
+render_target_update_mode = 4
 
 [node name="Camera3D" type="Camera3D" parent="Tracker/TrackerContainer/GridContainer/ItemSlot4/ItemContainer/SubViewport"]
 transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 4, 0)
@@ -240,7 +253,7 @@ handle_input_locally = false
 size = Vector2i(140, 140)
 size_2d_override = Vector2i(512, 512)
 size_2d_override_stretch = true
-render_target_update_mode = 0
+render_target_update_mode = 4
 
 [node name="Camera3D" type="Camera3D" parent="Tracker/TrackerContainer/GridContainer/ItemSlot5/ItemContainer/SubViewport"]
 transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 4, 0)
@@ -272,7 +285,7 @@ handle_input_locally = false
 size = Vector2i(140, 140)
 size_2d_override = Vector2i(512, 512)
 size_2d_override_stretch = true
-render_target_update_mode = 0
+render_target_update_mode = 4
 
 [node name="Camera3D" type="Camera3D" parent="Tracker/TrackerContainer/GridContainer/ItemSlot6/ItemContainer/SubViewport"]
 transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 4, 0)
@@ -304,7 +317,7 @@ handle_input_locally = false
 size = Vector2i(140, 140)
 size_2d_override = Vector2i(512, 512)
 size_2d_override_stretch = true
-render_target_update_mode = 0
+render_target_update_mode = 4
 
 [node name="Camera3D" type="Camera3D" parent="Tracker/TrackerContainer/GridContainer/ItemSlot7/ItemContainer/SubViewport"]
 transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 4, 0)
@@ -336,7 +349,7 @@ handle_input_locally = false
 size = Vector2i(140, 140)
 size_2d_override = Vector2i(512, 512)
 size_2d_override_stretch = true
-render_target_update_mode = 0
+render_target_update_mode = 4
 
 [node name="Camera3D" type="Camera3D" parent="Tracker/TrackerContainer/GridContainer/ItemSlot8/ItemContainer/SubViewport"]
 transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 4, 0)
@@ -368,7 +381,7 @@ handle_input_locally = false
 size = Vector2i(140, 140)
 size_2d_override = Vector2i(512, 512)
 size_2d_override_stretch = true
-render_target_update_mode = 0
+render_target_update_mode = 4
 
 [node name="Camera3D" type="Camera3D" parent="Tracker/TrackerContainer/GridContainer/ItemSlot9/ItemContainer/SubViewport"]
 transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 4, 0)
@@ -412,32 +425,42 @@ offset_right = 312.0
 offset_bottom = 312.0
 texture = SubResource("ViewportTexture_cjncx")
 
-[node name="TrackerAdditionalInfoContainer" type="MarginContainer" parent="Tracker"]
+[node name="ChatWindowContainer" type="MarginContainer" parent="Tracker"]
 layout_mode = 0
-offset_right = 362.0
-offset_bottom = 430.0
+offset_left = 1.0
+offset_right = 415.0
+offset_bottom = 386.0
 theme_override_constants/margin_left = 50
-theme_override_constants/margin_top = 40
+theme_override_constants/margin_top = 46
 
-[node name="VBoxContainer" type="VBoxContainer" parent="Tracker/TrackerAdditionalInfoContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="Tracker/ChatWindowContainer"]
 layout_mode = 2
 
-[node name="HBoxContainer" type="HBoxContainer" parent="Tracker/TrackerAdditionalInfoContainer/VBoxContainer"]
+[node name="PanelContainer" type="PanelContainer" parent="Tracker/ChatWindowContainer/VBoxContainer"]
 layout_mode = 2
 
-[node name="luck_label" type="Label" parent="Tracker/TrackerAdditionalInfoContainer/VBoxContainer/HBoxContainer"]
+[node name="chat_log" type="RichTextLabel" parent="Tracker/ChatWindowContainer/VBoxContainer/PanelContainer"]
+custom_minimum_size = Vector2(0, 386)
+layout_mode = 2
+theme_override_fonts/normal_font = ExtResource("1_spycr")
+theme_override_font_sizes/normal_font_size = 12
+scroll_following = true
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Tracker/ChatWindowContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="text_client_input" type="LineEdit" parent="Tracker/ChatWindowContainer/VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(296, 0)
 layout_mode = 2
 theme_override_fonts/font = ExtResource("1_spycr")
-theme_override_font_sizes/font_size = 24
-text = "Current Luck: "
-vertical_alignment = 2
+theme_override_font_sizes/font_size = 12
 
-[node name="luck_level" type="Label" parent="Tracker/TrackerAdditionalInfoContainer/VBoxContainer/HBoxContainer"]
+[node name="send_msg" type="Button" parent="Tracker/ChatWindowContainer/VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(64, 0)
 layout_mode = 2
 theme_override_fonts/font = ExtResource("1_spycr")
-theme_override_font_sizes/font_size = 24
-text = "NONE"
-vertical_alignment = 2
+theme_override_font_sizes/font_size = 12
+text = "SEND"
 
 [node name="LifeBankCanvas" type="CanvasLayer" parent="."]
 layer = 4
@@ -644,6 +667,8 @@ stream = ExtResource("6_1prmu")
 [connection signal="mouse_entered" from="Tracker/TrackerContainer/GridContainer/ItemSlot9" to="Tracker/TrackerContainer/GridContainer/ItemSlot9" method="_on_mouse_entered"]
 [connection signal="mouse_exited" from="Tracker/TrackerContainer/GridContainer/ItemSlot9" to="Tracker/TrackerContainer/GridContainer/ItemSlot9" method="_on_mouse_exited"]
 [connection signal="show_tracker_info" from="Tracker/TrackerContainer/GridContainer/ItemSlot9" to="." method="_on_show_tracker_info"]
+[connection signal="gui_input" from="Tracker/ChatWindowContainer/VBoxContainer/HBoxContainer/text_client_input" to="." method="_on_text_client_input_gui_input"]
+[connection signal="pressed" from="Tracker/ChatWindowContainer/VBoxContainer/HBoxContainer/send_msg" to="." method="_on_send_msg_pressed"]
 [connection signal="gui_input" from="LifeBankCanvas/LifeBank/LifeBankContainer/Icon" to="LifeBankCanvas/LifeBank" method="_on_icon_gui_input"]
 [connection signal="mouse_entered" from="LifeBankCanvas/LifeBank/LifeBankContainer/Icon" to="LifeBankCanvas/LifeBank" method="_on_icon_mouse_entered"]
 [connection signal="mouse_exited" from="LifeBankCanvas/LifeBank/LifeBankContainer/Icon" to="LifeBankCanvas/LifeBank" method="_on_icon_mouse_exited"]

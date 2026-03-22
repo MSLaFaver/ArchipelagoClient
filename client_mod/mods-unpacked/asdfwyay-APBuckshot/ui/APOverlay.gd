@@ -11,12 +11,15 @@ var current_msgs: Array = []
 @onready var connect_status: Label = $OuterContainer/InnerContainer/connect_status
 @onready var tracker: Control = $Tracker
 @onready var tracker_label: MarginContainer = $Tracker/TrackerLabelContainer
-@onready var tracker_added: MarginContainer = $Tracker/TrackerAdditionalInfoContainer
+@onready var tracker_text_client: MarginContainer = $Tracker/ChatWindowContainer
+@onready var luck_level: Label = $Tracker/LuckContainer/luck_level
+@onready var chat_log: RichTextLabel = $Tracker/ChatWindowContainer/VBoxContainer/PanelContainer/chat_log
+@onready var chat_input: LineEdit = $Tracker/ChatWindowContainer/VBoxContainer/HBoxContainer/text_client_input
+@onready var chat_send: Button = $Tracker/ChatWindowContainer/VBoxContainer/HBoxContainer/send_msg
 @onready var life_bank: Control = $LifeBankCanvas/LifeBank
 @onready var item_name: Label = $Tracker/TrackerLabelContainer/VBoxContainer/item_name
 @onready var item_status: Label = $Tracker/TrackerLabelContainer/VBoxContainer/item_status
 @onready var item_model: TextureRect = $Tracker/TrackerLabelContainer/VBoxContainer/ItemModelBG/ItemModel
-@onready var luck_level: Label = $Tracker/TrackerAdditionalInfoContainer/VBoxContainer/HBoxContainer/luck_level
 @onready var stolen_indicator: SubViewportContainer = $TrapIndicators/OuterIndicatorContainer/HBoxContainer/StolenIndicator
 @onready var schrodinger_indicator: SubViewportContainer = $TrapIndicators/OuterIndicatorContainer/HBoxContainer/SchrodingerIndicator/IndicatorVPContainer
 @onready var deathlink_indicator: TextureRect = $TrapIndicators/OuterIndicatorContainer/HBoxContainer/DeathLinkIndicator
@@ -25,15 +28,15 @@ var current_msgs: Array = []
 @onready var notification_player: AudioStreamPlayer = $Notifications/NotificationPlayer
 @onready var notification_container: VBoxContainer = $Notifications/NotificationMarginContainer/NotificationContainer
 
-
 func _ready():
 	ApClient = $"/root/ModLoader/asdfwyay-APBuckshot/ApClient"
 	print(ApClient)
 	ApClient.send_notification.connect(_on_receive_notification)
+	ApClient.send_chat.connect(_on_receive_chat)
 	
 	tracker.visible = false
 	tracker_label.visible = false
-	tracker_added.visible = true
+	tracker_text_client.visible = true
 	
 	stolen_indicator.visible = false
 	schrodinger_indicator.visible = false
@@ -65,6 +68,8 @@ func _process(delta):
 	stolen_indicator.visible = ApClient.I_ITEM_TRAP in ApClient.trapQueue
 	schrodinger_indicator.visible = ApClient.I_BULLET_TRAP in ApClient.trapQueue
 	deathlink_indicator.visible = ApClient.awaitingDeathLink
+	
+	
 	
 	match ApClient.connectionState:
 		ApClient.ConnectionState.DISCONNECTED:
@@ -103,7 +108,7 @@ func _input(event):
 						disable_dialogue_ui(dialogue_ui)
 					prev_mouse_mode = Input.mouse_mode
 					Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
-					update_additional_info()
+					update_luck_level()
 				else:
 					if dialogue_ui:
 						enable_dialogue_ui(dialogue_ui)
@@ -126,22 +131,22 @@ func _on_show_tracker_info(id: int, name: String, vp: SubViewport):
 	if item_model.texture is ViewportTexture:
 		item_model.texture.set_viewport_path_in_scene(vp.get_path())
 		
-	tracker_added.visible = false
+	tracker_text_client.visible = false
 	tracker_label.visible = true
 
 
 func _on_hide_tracker_info():
-	update_additional_info()
+	update_luck_level()
 	
 	tracker_label.visible = false
-	tracker_added.visible = true
+	tracker_text_client.visible = true
 
 
-func update_additional_info():
+func update_luck_level():
 	if (ApClient.mechanicItems.has(ApClient.I_ITEM_LUCK)):
 		match (ApClient.mechanicItems[ApClient.I_ITEM_LUCK]):
 			0:
-				luck_level.text = "NONE"
+				luck_level.text = ""
 				luck_level.set("theme_override_colors/font_color", Color8(204, 51, 0))
 			1:
 				luck_level.text = "♣"
@@ -201,3 +206,69 @@ func _on_receive_notification(msg):
 		var oldest_msg = current_msgs.pop_front()
 		if is_instance_valid(oldest_msg):
 			oldest_msg.queue_free()
+
+
+func _on_receive_chat(msg):
+	notification_player.play()
+	chat_log.append_text(msg)
+
+
+func remove_char_at_index(in_str: String, i: int) -> String:
+	if i < 0 or i >= in_str.length():
+		return in_str
+	return in_str.substr(0, i) + in_str.substr(i + 1, in_str.length() - i - 1)
+
+
+func remove_substr_at_indices(in_str: String, start: int, end: int) -> String:
+	if start >= in_str.length() or end < 0 or end < start:
+		return in_str
+	
+	start = max(0, start)
+	end = min(in_str.length() - 1, end)
+	
+	return in_str.substr(0, start) + in_str.substr(end + 1, in_str.length() - end - 1)
+
+
+func _handle_control_keys(event, input_field: LineEdit):
+	if event is InputEventKey:
+		if event.pressed and event.keycode == KEY_LEFT:
+			input_field.caret_column = max(0, input_field.caret_column - 1)
+		if event.pressed and event.keycode == KEY_RIGHT:
+			input_field.caret_column = min(
+				input_field.text.length(),
+				input_field.caret_column + 1
+			)
+		if event.pressed and event.keycode == KEY_BACKSPACE:
+			var caret_column
+			
+			if input_field.get_selected_text():
+				caret_column = input_field.get_selection_from_column()
+				input_field.text = remove_substr_at_indices(
+					input_field.text,
+					input_field.get_selection_from_column(),
+					input_field.get_selection_to_column() - 1
+				)
+				input_field.caret_column = caret_column
+			elif (input_field.text).length() > 0:
+				caret_column = input_field.caret_column
+				input_field.text = remove_char_at_index(
+					input_field.text,
+					caret_column - 1
+				)
+				input_field.caret_column = caret_column - 1
+		if event.pressed and event.keycode == KEY_ENTER:
+			_on_send_msg_pressed()
+
+
+func _on_text_client_input_gui_input(event):
+	_handle_control_keys(event, chat_input)
+
+
+func _on_send_msg_pressed():
+	if not chat_input.text:
+		return
+	
+	var chatPck = ApClient.Say.new(chat_input.text)
+	ApClient.SendPacket(chatPck)
+	
+	chat_input.text = ""
