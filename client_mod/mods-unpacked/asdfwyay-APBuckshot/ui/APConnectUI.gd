@@ -8,6 +8,7 @@ var canConnect: bool
 @onready var port_input: LineEdit = $BaseMenu/VBoxContainer/GridContainer/port_input
 @onready var password_input: LineEdit = $BaseMenu/VBoxContainer/GridContainer/password_input
 @onready var deathlink_cb: CheckButton = $BaseMenu/VBoxContainer/GridContainer/deathlink_cb
+@onready var hint_cb: CheckButton = $BaseMenu/VBoxContainer/GridContainer/hint_cb
 @onready var connect_button: Button = $BaseMenu/VBoxContainer/GridContainer/connect_button
 @onready var connect_status: Label = $BaseMenu/VBoxContainer/GridContainer/connect_status
 @onready var error_msg: Label = $ErrorNotification/error_msg
@@ -31,6 +32,7 @@ func _ready():
 	connect_status.text = "NOT CONNECTED"
 	
 	deathlink_cb.set_pressed_no_signal(ApClient.deathLink)
+	hint_cb.set_pressed_no_signal(ApClient.hint_mode)
 
 
 func _process(delta):
@@ -154,3 +156,8 @@ func _on_receive_error_msg(msg):
 			display_error_msg("Invalid Password", 4.0, 1.0)
 		_:
 			display_error_msg("Failed to Connect", 4.0, 1.0)
+
+
+func _on_hint_cb_toggled(button_pressed):
+	ApClient.setHintMode(hint_cb.button_pressed)
+	hint_cb.set_pressed_no_signal(ApClient.hint_mode)
