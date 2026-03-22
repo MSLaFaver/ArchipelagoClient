@@ -68,6 +68,10 @@ func install_script_hook_files() -> void:
 		"res://scripts/EndingManager.gd",
 		"res://mods-unpacked/asdfwyay-APBuckshot/scripts/hooks/EndingManager.hooks.gd"
 	)
+	ModLoaderMod.install_script_hooks(
+		"res://scripts/DealerIntelligence.gd",
+		"res://mods-unpacked/asdfwyay-APBuckshot/scripts/hooks/DealerIntelligence.hooks.gd"
+	)
 	#ModLoaderMod.install_script_hooks(
 	#	"res://multiplayer/scripts/MP_LobbyManager.gd",
 	#	"res://mods-unpacked/asdfwyay-APBuckshot/scripts/hooks/multiplayer/MP_LobbyManager.hooks.gd"
